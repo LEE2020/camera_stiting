@@ -19,10 +19,17 @@ sem_t* semaphore_display;
 
 void stich_frame(int tid){
     cv::VideoCapture cap1, cap2, cap3, cap4;   // F, R, B, L
-    cap1.open("../resources/videos/F500_0903_0.avi");
-    cap2.open("../resources/videos/R500_0903_0.avi");
-    cap3.open("../resources/videos/B500_0903_0.avi");
-    cap4.open("../resources/videos/L500_0903_0.avi");
+    cap1.open("./resources/videos/F500_0903_0.avi");
+    cap2.open("./resources/videos/R500_0903_0.avi");
+    cap3.open("./resources/videos/B500_0903_0.avi");
+    cap4.open("./resources/videos/L500_0903_0.avi");
+
+    // 读取一帧并显示各视频流的图像
+    cv::Mat frameF, frameR, frameB, frameL;
+    cap1 >> frameF;
+    cap2 >> frameR;
+    cap3 >> frameB;
+    cap4 >> frameL;
 
     pc::Sticher sticher;
     std::vector<cv::Mat> imgs(pc::numCamera);
@@ -39,32 +46,21 @@ void stich_frame(int tid){
         cap3>>imgs[2];
         cap4>>imgs[3];
 
-       //sticher.stich(panoramaResult, imgs, remapImgs);
-              
-        try {
-            //sticher.stich_ori(panoramaResult,imgs,remapImgs,1,1);
-            sticher.stich(panoramaResult, imgs, remapImgs);
-            sem_post(semaphore_display);
-            clock_t time_end2=std::clock();  
-        } catch (cv::Exception& e) {
-            std::cerr << "OpenCV exception caught: " << e.what() << std::endl;
-            return;
-        } catch (std::exception& e) {
-            std::cerr << "Standard exception caught: " << e.what() << std::endl;
-            return;
-        } catch (...) {
-            std::cerr << "Unknown exception caught!" << std::endl;
-            return;
-        }
+        sticher.stich(panoramaResult, imgs, remapImgs);
+        sem_post(semaphore_display);
+        clock_t time_end2=std::clock();
     }
     return;
 }
 
 int main() {
 
-    semaphore_display = sem_open("sem2",O_CREAT, S_IRUSR | S_IWUSR, 0);
+    semaphore_display = sem_open("sem1",O_CREAT, S_IRUSR | S_IWUSR, 0);
 
     writer.open("../result.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 5, pc::stitchResultSize, true);
+
+    // 创建显示窗口
+    cv::namedWindow("result", cv::WINDOW_AUTOSIZE);
 
     std::thread threads[pc::threads_num];
     for(int i=0; i<pc::threads_num; i++){
@@ -74,14 +70,24 @@ int main() {
     int temp=200;
     while(temp--){
         sem_wait(semaphore_display);
-        cv::imshow("result", panoramaResult);
-        int key = cv::waitKey(5);
+        // 检查图像是否有效再显示
+        if (!panoramaResult.empty()){
+            cv::imshow("result", panoramaResult);
+            writer.write(panoramaResult);
+        } else {
+            std::cerr << "Warning: panoramaResult is empty!" << std::endl;
+        }
+        int key = cv::waitKey(10);
         if(key>0)
             break;
-        writer.write(panoramaResult);
     }
 
     writer.release();
+
+    for(int i = 0; i < pc::threads_num; i++){
+        if(threads[i].joinable())
+            threads[i].join();
+    }
 
     sem_close(semaphore_display);
     sem_unlink("sem1");

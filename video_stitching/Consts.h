@@ -4,17 +4,17 @@
 
 #include <iostream>
 #include <vector>
-#include <opencv2/opencv.hpp>
-#include <opencv2/core/core.hpp>
+#include "opencv2/opencv.hpp"
+#include "opencv2/core/core.hpp"
 
 
 namespace pc{
     const int numCamera = 4;
     static char *parm_files[4]={
-            "../resources/calibration_data//FAffineLX.txt",
-            "../resources/calibration_data//RAffineLX.txt",
-            "../resources/calibration_data//BAffineLX.txt",
-            "../resources/calibration_data//LAffineLX.txt"};
+            "./resources/calibration_data//FAffineLX.txt",
+            "./resources/calibration_data//RAffineLX.txt",
+            "./resources/calibration_data//BAffineLX.txt",
+            "./resources/calibration_data//LAffineLX.txt"};
     const double PI = 3.1415926;
     const cv::Size photoSize(1920, 1080); // 1280 1080
     const cv::Size stitchResultSize(1200, 500);

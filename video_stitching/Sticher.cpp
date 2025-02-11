@@ -25,14 +25,25 @@ pc::Sticher::Sticher(){
         cv::Mat maskMaps_temp = maskMaps[k].getMat(cv::ACCESS_WRITE);
         for(int i=0; i<pc::stitchResultSize.width; i++){
             for(int j=0; j<pc::stitchResultSize.height; j++){
-                if(projectors[k].mapBackward(i,j,x,y) &&
-                   x>=double(0) && x<pc::photoSize.width && y>=double(0) && y<pc::photoSize.height){
+                // 添加校验
+                if(projectors[k].mapBackward(i, j, x, y) &&
+                   x>=0 && x<pc::photoSize.width && y>=0 && y<pc::photoSize.height){
                     xMaps[k].at<float>(j,i) = static_cast<float>(x);
                     yMaps[k].at<float>(j,i) = static_cast<float>(y);
                     maskMaps_temp.at<uchar>(j,i) = 255;
+                } else {
+                    // 如果计算无效，可选择赋予默认值或者打印警告
+                    // xMaps[k].at<float>(j,i) = -1;
+                    // yMaps[k].at<float>(j,i) = -1;
                 }
             }
         }
+        // 恢复调试输出打印
+        //double minVal, maxVal;
+        //cv::minMaxLoc(xMaps[k], &minVal, &maxVal);
+       // std::cout << "Camera " << k << " xMap: min=" << minVal << " max=" << maxVal << std::endl;
+       // cv::minMaxLoc(yMaps[k], &minVal, &maxVal);
+      //  std::cout << "Camera " << k << " yMap: min=" << minVal << " max=" << maxVal << std::endl;
     }
 
     cv::bitwise_and(maskMaps[0], maskMaps[1], overlapFR, maskMaps[0]);
@@ -73,7 +84,11 @@ void pc::Sticher::photometricAlignment_std(cv::UMat &imgF, cv::UMat &imgR, cv::U
 //    cv::meanStdDev(B_YCbCr, meanRB_B, stdRB_B, overlapRB);
 //    cv::meanStdDev(B_YCbCr, meanBL_B, stdBL_B, overlapBL);
 //    cv::meanStdDev(L_YCbCr, meanBL_L, stdBL_L, overlapBL);
-//    cv::meanStdDev(L_YCbCr, meanLF_L, stdLF_L, overlapLF);
+//    cv::mea
+cv::Scalar FR_mean({0,0,0,0});
+cv::Scalar RB_mean({0,0,0,0});
+cv::Scalar BL_mean({0,0,0,0});
+cv::Scalar LF_mean({0,0,0,0}); 
 //    cv::meanStdDev(F_YCbCr, meanLF_F, stdLF_F, overlapLF);
 
     cv::Mat F_YCbCr, L_YCbCr, B_YCbCr, R_YCbCr;
@@ -221,6 +236,12 @@ void pc::Sticher::stich(cv::Mat& result, const std::vector<cv::Mat>& imgs, std::
 
     for(int i=0;i<pc::numCamera;i++) {
         cv::remap(imgs[i], remapImgs[i], xMaps[i], yMaps[i], cv::INTER_LINEAR, cv::BORDER_REFLECT);
+        // 恢复调试打印：检查映射矩阵
+        double minVal, maxVal;
+        cv::minMaxLoc(xMaps[i], &minVal, &maxVal);
+        std::cout << "Camera " << i << " xMap: min=" << minVal << " max=" << maxVal << std::endl;
+        cv::minMaxLoc(yMaps[i], &minVal, &maxVal);
+        std::cout << "Camera " << i << " yMap: min=" << minVal << " max=" << maxVal << std::endl;
     }
 
 
@@ -241,7 +262,7 @@ void pc::Sticher::stich(cv::Mat& result, const std::vector<cv::Mat>& imgs, std::
         cv::resize(remapImgs[i], resize_images_wraped_f[i], pc::resizeStitchResultSize);
     }
 
-
+// 查找最佳接缝
   //if(mySeamFinder->find_dp_temporal_fast(resize_images_wraped_f, resizeMaskMapsSeam, true))
     if(mySeamFinder->find_dp_temporal_fast(resize_images_wraped_f, resizeMaskMapsSeam, false))
     {
