@@ -31,5 +31,5 @@ The implementation of "Pedestrian-Aware Panoramic Video Stitching Based on a Str
 1. 复现行人视频拼接项目
 #2.12 项目移植
 1. 相机标定部分
-2. 相机对齐（从4个相机移动到6个相机），相应的处理代码的修改
-3. 
+2. 相机对齐（从4个相机移动到6个相机），相应的处理代码的修改完成
+3. 调试
