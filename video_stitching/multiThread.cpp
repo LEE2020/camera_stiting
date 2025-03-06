@@ -12,24 +12,25 @@
 #include "Projector.h"
 #include "Sticher.h"
 #include "Consts.h"
+#include <mutex>    // 添加互斥锁头文件
 
 cv::VideoWriter writer;
 cv::Mat panoramaResult;
 sem_t* semaphore_display;
+std::mutex panoramaMutex;  // 全局互斥锁
 
 void stich_frame(int tid){
-    cv::VideoCapture cap1, cap2, cap3, cap4;   // F, R, B, L
-    cap1.open("./resources/videos/F500_0903_0.avi");
-    cap2.open("./resources/videos/R500_0903_0.avi");
-    cap3.open("./resources/videos/B500_0903_0.avi");
-    cap4.open("./resources/videos/L500_0903_0.avi");
-
-    // 读取一帧并显示各视频流的图像
-    cv::Mat frameF, frameR, frameB, frameL;
-    cap1 >> frameF;
-    cap2 >> frameR;
-    cap3 >> frameB;
-    cap4 >> frameL;
+    cv::VideoCapture cap1, cap2, cap3, cap4,cap5,cap6;   // F, R, B, L
+    //cap1.open("./resources/videos/F500_0903_4.avi");
+    //cap2.open("./resources/videos/R500_0903_4.avi");
+    //cap3.open("./resources/videos/B500_0903_4.avi");
+    //cap4.open("./resources/videos/L500_0903_4.avi");
+    cap1.open("../camera_ff_1.avi");
+    cap2.open("../camera_fl_6.avi");
+    cap3.open("../camera_bl_3.avi");
+    cap4.open("../camera_bb_2.avi");
+    cap5.open("../camera_br_4.avi");
+    cap6.open("../camera_fr_5.avi");
 
     pc::Sticher sticher;
     std::vector<cv::Mat> imgs(pc::numCamera);
@@ -45,8 +46,13 @@ void stich_frame(int tid){
         cap2>>imgs[1];
         cap3>>imgs[2];
         cap4>>imgs[3];
-
-        sticher.stich(panoramaResult, imgs, remapImgs);
+        cap5>>imgs[4];
+        cap6>>imgs[5];
+        {   // 给 panoramaResult 的写入加互斥保护
+            std::lock_guard<std::mutex> lock(panoramaMutex);
+            sticher.stich(panoramaResult, imgs, remapImgs);
+        }
+        //sticher.stich(panoramaResult, imgs, remapImgs);
         sem_post(semaphore_display);
         clock_t time_end2=std::clock();
     }
@@ -56,7 +62,7 @@ void stich_frame(int tid){
 int main() {
 
     semaphore_display = sem_open("sem1",O_CREAT, S_IRUSR | S_IWUSR, 0);
-
+    //采用MJPG编码，文件名为result.avi，帧率为5，画面尺寸为pc::stitchResultSize
     writer.open("../result.avi", cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), 5, pc::stitchResultSize, true);
 
     // 创建显示窗口
@@ -71,12 +77,14 @@ int main() {
     while(temp--){
         sem_wait(semaphore_display);
         // 检查图像是否有效再显示
+        {std::lock_guard<std::mutex> lock(panoramaMutex);
         if (!panoramaResult.empty()){
             cv::imshow("result", panoramaResult);
             writer.write(panoramaResult);
         } else {
             std::cerr << "Warning: panoramaResult is empty!" << std::endl;
         }
+    }
         int key = cv::waitKey(10);
         if(key>0)
             break;

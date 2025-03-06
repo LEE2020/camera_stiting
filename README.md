@@ -19,7 +19,7 @@ The implementation of "Pedestrian-Aware Panoramic Video Stitching Based on a Str
   * pangolin
 * C++
   * cmake
-  * OpenCV 4.2.0
+  * OpenCV 4.2.0 
   * eigen3
   * Threads
 
@@ -29,3 +29,7 @@ The implementation of "Pedestrian-Aware Panoramic Video Stitching Based on a Str
 1. 解决图像中的坐标映射问题报错。平面像素坐标转换为三维圆柱体坐标。4个摄像头水平展开，形成一个圆柱体全视野。
 #2.11 
 1. 复现行人视频拼接项目
+#2.12 项目移植
+1. 相机标定部分
+2. 相机对齐（从4个相机移动到6个相机），相应的处理代码的修改
+3. 

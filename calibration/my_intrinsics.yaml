@@ -4,57 +4,65 @@
 # Camera Parameters. Adjust them!
 #--------------------------------------------------------------------------------------------
 
-# Camera calibration and distortion parameters (OpenCV)
-FrontCamera.fx: 4.8011318409463320e+02
-FrontCamera.fy: 4.7830507968352191e+02
-FrontCamera.cx: 9.7821348179632912e+02
-FrontCamera.cy: 5.4957255646087992e+02
+FrontFCamera.fx: 3463.72585
+FrontFCamera.fy: 3231.6537
+FrontFCamera.cx: 1071.41798 
+FrontFCamera.cy: 333.628077
+FrontFCamera.k1: 0.57213461
+FrontFCamera.k2: -11.5549736 
+FrontFCamera.k3:   57.43673517
+FrontFCamera.k4: 0
 
-FrontCamera.k1: -9.6267830452521450e-02
-FrontCamera.k2: 1.1741888787963320e-02
-FrontCamera.k3: -5.7584372597573874e-03
-FrontCamera.k4: 8.7356411790594452e-04
+FrontRCamera.fx: 1108.511882005813
+FrontRCamera.fy: 1125.614075577118
+FrontRCamera.cx: 1075.7869363208667
+FrontRCamera.cy: 536.6929056925013
+FrontRCamera.k1: -0.51278417
+FrontRCamera.k2: -0.51742545
+FrontRCamera.k3:  3.74786421
+FrontRCamera.k4: 0
 
-
-
-LeftCamera.fx: 4.8008410277848213e+02
-LeftCamera.fy: 4.7848639404105364e+02
-LeftCamera.cx: 9.9216233628405803e+02
-LeftCamera.cy: 5.3874395419687175e+02
-
-LeftCamera.k1: -8.6632696241985344e-02
-LeftCamera.k2: 6.6984995389252570e-03
-LeftCamera.k3: -9.8465327645725353e-03
-LeftCamera.k4: 2.5511918077534119e-03
-
-
-
-BackCamera.fx: 4.8330732686228856e+02
-BackCamera.fy: 4.8159066913213104e+02
-BackCamera.cx: 9.5191022532914360e+02
-BackCamera.cy: 5.5233172026300974e+02
-
-BackCamera.k1: -9.8910776464553110e-02
-BackCamera.k2: 1.0423700239892144e-02
-BackCamera.k3: -4.6702674565410243e-03
-BackCamera.k4: 6.3700997768718882e-04
+FrontLCamera.fx: 5367.4025062794535
+FrontLCamera.fy: 4007.032406647098
+FrontLCamera.cx: 947.058474924855
+FrontLCamera.cy: 541.3257781257621
+FrontLCamera.k1: 3.55427205
+FrontLCamera.k2: -1164.6404438 
+FrontLCamera.k3: -4.17346434
+FrontLCamera.k4: 0
 
 
+BackBCamera.fx: 1085.0399354236388
+BackBCamera.fy: 1096.592572541551 
+BackBCamera.cx: 731.8290785553396
+BackBCamera.cy: 641.5759721924595
+BackBCamera.k1: 0.09030105
+BackBCamera.k2: -0.85380452 
+BackBCamera.k3: 1.20505794
+BackBCamera.k4: 0
 
-RightCamera.fx: 4.8230798651116356e+02
-RightCamera.fy: 4.8033341362286990e+02
-RightCamera.cx: 9.8770168903363447e+02
-RightCamera.cy: 5.4238389741661661e+02
+BackRCamera.fx: 906.1195009984746
+BackRCamera.fy: 1092.73914569905
+BackRCamera.cx: 961.6913991861175
+BackRCamera.cy: 590.1856639009302
+BackRCamera.k1: -1.18729241
+BackRCamera.k2: 19.74982105
+BackRCamera.k3: -133.71558314
+BackRCamera.k4: 0
 
-RightCamera.k1: -8.8858612100549128e-02
-RightCamera.k2: -3.8653159672533597e-03
-RightCamera.k3: 5.8051669994066395e-03
-RightCamera.k4: -2.2490094010112730e-03
+BackLCamera.fx: 468.65936980390285
+BackLCamera.fy: 471.3255784982322 
+BackLCamera.cx: 1051.3546837405372
+BackLCamera.cy: 557.9158939939299 
+BackLCamera.k1: -0.2546635
+BackLCamera.k2: 0.57661026
+BackLCamera.k3: -0.7603401 
+BackLCamera.k4: 0
 
+####
 #How many points will be used in the optimization process
-PointsNumber: 54
 #Iterations the optimization process will continue
-Itervals: 10000
-
+PointsNumber: 72
+Intervals: 10000
 #None , Huber , Cauchy , Tukey
 RobustKernel: Huber

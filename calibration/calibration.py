@@ -54,7 +54,7 @@ def estimateFisheye2d2dByCamera(camera1, camera2):
     # objpoints shape: (<num of calibration images>, 1, <num points in set>, 3)
     # imgpoints_left shape: (<num of calibration images>, 1, <num points in set>, 2)
     # imgpoints_right shape: (<num of calibration images>, 1, <num points in set>, 2)
-    retval, cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2, R, T= \
+    retval, cameraMatrix1, distCoeffs1, cameraMatrix2, distCoeffs2, R, T,*_= \
     cv2.fisheye.stereoCalibrate(gPoints3d_arr, gPoints2d1_arr, gPoints2d2_arr, camera1.K, camera1.D, camera2.K, camera2.D, (1920, 1080))
 
     camera2.R = np.matmul(R, camera1.R)
@@ -101,4 +101,7 @@ def triangulationPairs(camera1, camera2):
         triangulationPairsPoints.append(temp)
 
     return triangulationPairsPoints
+
+# 负责组织校准流程：加载图像、处理图像、检测特征点/角点并计算初步外参，
+# 并调用 camera.py 中的相机模型完成数据转换，为 g2o_optimize.py 做准备。
 

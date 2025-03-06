@@ -61,7 +61,7 @@ class Camera:
             file_path = os.path.join(folder_path, file_name)
             self.frames2.append(CalibrateFrame(file_path))
 
-    def calibrateAllFrames(self, pattern_size=(9, 6)):
+    def calibrateAllFrames(self, pattern_size=(10,10)):
         for frame in self.frames1:
             frame.pattern_size = pattern_size
             frame.extractBoardPoints(self.K, self.D)

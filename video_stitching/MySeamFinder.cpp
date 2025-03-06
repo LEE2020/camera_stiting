@@ -126,7 +126,8 @@ bool pc::MySeamFinder::find_dp_temporal_fast(std::vector<cv::UMat> &remapImgs, s
 
     int rows = remapImgs[0].rows;
     int cols = remapImgs[0].cols;
-    bool flags4[4] = {1,1,1,1};
+    //bool flags4[4] = {1,1,1,1};
+    bool flags4[6] ={1,1,1,1,1,1};
     if(not_firstframe){
         // 计算缝合线处差异，从而确定要不要更新缝合线
         bool flag = false; //不需要更新
@@ -154,7 +155,7 @@ bool pc::MySeamFinder::find_dp_temporal_fast(std::vector<cv::UMat> &remapImgs, s
     std::vector<std::vector<int> > seamPos;
     std::vector<cv::Mat> remapImgs_gray_Mat;
 
-    for(int i=0; i<4; i++){
+    for(int i=0; i<pc::numCamera; i++){
         cv::Mat temp;
         cv::cvtColor(remapImgs[i].getMat(cv::ACCESS_FAST), temp, cv::COLOR_BGR2GRAY);
         remapImgs_gray_Mat.push_back(temp);
@@ -166,7 +167,7 @@ bool pc::MySeamFinder::find_dp_temporal_fast(std::vector<cv::UMat> &remapImgs, s
         seamPos = lastframe_seamPos_;
 
     uchar* ptmp = NULL;
-    for(int i=0; i<4; i++){
+    for(int i=0; i<pc::numCamera; i++){
         for(int r=0; r<pc::resizeStitchResultSize.height; r++){
             ptmp = remapImgs_gray_Mat[i].ptr<uchar>(r);
             for(int c=0; c<pc::resizeStitchResultSize.width; c++){
@@ -179,7 +180,7 @@ bool pc::MySeamFinder::find_dp_temporal_fast(std::vector<cv::UMat> &remapImgs, s
 
     // compute saliency through gradient
     if(human== false)
-        for(int i=0; i<4; i++){
+        for(int i=0; i<pc::numCamera; i++){
             for(int r=1; r<pc::resizeStitchResultSize.height-1; r++){
                 for(int c=1; c<pc::resizeStitchResultSize.width-1; c++){
                     saliency[i][r][c] = 10 * (std::abs(remapImgs_gray[i][r-1][c] - remapImgs_gray[i][r+1][c]) +
@@ -192,7 +193,7 @@ bool pc::MySeamFinder::find_dp_temporal_fast(std::vector<cv::UMat> &remapImgs, s
         human_segmentation_socket(remapImgs);
 
         uchar* ptmp = NULL;
-        for(int i=0; i<4; i++){
+        for(int i=0; i<pc::numCamera; i++){
             for(int r=0; r<pc::resizeStitchResultSize.height; r++){
                 ptmp = human_saliency[i].ptr<uchar>(r);
                 for(int c=0; c<pc::resizeStitchResultSize.width; c++){
@@ -202,8 +203,8 @@ bool pc::MySeamFinder::find_dp_temporal_fast(std::vector<cv::UMat> &remapImgs, s
         }
     }
 
-    for(int i=0; i<4; i++){
-        int a = i, b = (i+1)%4;
+    for(int i=0; i<pc::numCamera; i++){
+        int a = i, b = (i+1)%(pc::numCamera);
         for(int r=0; r<pc::resizeStitchResultSize.height; r++){
             for(int c=0; c<pc::resizeStitchResultSize.width-1; c++){
                 remapImgs_gray_diff_lr[i][r][c] = std::abs(remapImgs_gray[a][r][c] - remapImgs_gray[b][r][c+1]) +
@@ -211,8 +212,8 @@ bool pc::MySeamFinder::find_dp_temporal_fast(std::vector<cv::UMat> &remapImgs, s
             }
         }
     }
-    for(int i=0; i<4; i++){
-        int a = i, b = (i+1)%4;
+    for(int i=0; i<pc::numCamera; i++){
+        int a = i, b = (i+1)%(pc::numCamera);
         for(int r=0; r<pc::resizeStitchResultSize.height-1; r++){
             for(int c=0; c<pc::resizeStitchResultSize.width; c++){
                 remapImgs_gray_diff_ud[i][r][c] = std::abs(remapImgs_gray[a][r+1][c] - remapImgs_gray[b][r][c]) +

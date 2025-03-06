@@ -32,12 +32,12 @@ namespace pc {
         std::vector<cv::Mat> lastframe_seamPosMaps;
         bool not_firstframe=false;
 
-        int (*spacial_cost)[pc::resize_height][pc::resize_width] = new int[4][pc::resize_height][pc::resize_width];
-        int (*spacial_mincost_lastcol)[pc::resize_height][pc::resize_width] = new int[4][pc::resize_height][pc::resize_width];
-        int (*remapImgs_gray)[pc::resize_height][pc::resize_width] = new int[4][pc::resize_height][pc::resize_width];
-        int (*remapImgs_gray_diff_lr)[pc::resize_height][pc::resize_width] = new int[4][pc::resize_height][pc::resize_width];
-        int (*remapImgs_gray_diff_ud)[pc::resize_height][pc::resize_width] = new int[4][pc::resize_height][pc::resize_width];
-        int (*saliency)[pc::resize_height][pc::resize_width] = new int[4][pc::resize_height][pc::resize_width];
+        int (*spacial_cost)[pc::resize_height][pc::resize_width] = new int[6][pc::resize_height][pc::resize_width];
+        int (*spacial_mincost_lastcol)[pc::resize_height][pc::resize_width] = new int[6][pc::resize_height][pc::resize_width];
+        int (*remapImgs_gray)[pc::resize_height][pc::resize_width] = new int[6][pc::resize_height][pc::resize_width];
+        int (*remapImgs_gray_diff_lr)[pc::resize_height][pc::resize_width] = new int[6][pc::resize_height][pc::resize_width];
+        int (*remapImgs_gray_diff_ud)[pc::resize_height][pc::resize_width] = new int[6][pc::resize_height][pc::resize_width];
+        int (*saliency)[pc::resize_height][pc::resize_width] = new int[6][pc::resize_height][pc::resize_width];
 
 //        torch::jit::script::Module human_module;
         std::vector<cv::Mat> human_saliency;

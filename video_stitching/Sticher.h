@@ -29,14 +29,20 @@ namespace pc{
         std::vector<cv::UMat> maskMapsSeam;
         std::vector<cv::Point> corners;
         cv::Mat overlapFR, overlapRB, overlapBL, overlapLF;
-        std::vector<Eigen::Vector4d> photometricAlignment_parameters; //3 channels * 4 images
+        //std::vector<Eigen::Vector4d> photometricAlignment_parameters; //3 channels * 4 images
+        std::vector<Eigen::Matrix<double,6,1>> photometricAlignment_parameters; // 3 channels * 6 images
         MySeamFinder * mySeamFinder;
+        cv::Mat overlapFF_FL,overlapFL_BL,overlapBL_BB,overlapBB_BR,overlapBR_FR,overlapFR_FF;
+        
 
         cv::Ptr<cv::detail::SeamFinder> seamFinderPtr;
         cv::Ptr<cv::detail::Blender> blenderPtr;
 
         void photometricAlignment_std(cv::UMat &imgF, cv::UMat &imgR, cv::UMat &imgB, cv::UMat &imgL);
         void compute_photometricAlignment_std(cv::UMat &imgF, cv::UMat &imgR, cv::UMat &imgB, cv::UMat &imgL);
+        void photometricAlignment_std_new(cv::UMat &imgFF, cv::UMat &imgFL, cv::UMat &imgBL, cv::UMat &imgBB,cv::UMat &imgBR,cv::UMat &imgFR);
+        void photometricAlignment_std2(cv::UMat &imgFF, cv::UMat &imgFL, cv::UMat &imgBL, cv::UMat &imgBB,cv::UMat &imgBR,cv::UMat &imgFR);
+        void compute_photometricAlignment_std2(cv::UMat &imgFF, cv::UMat &imgFL, cv::UMat &imgBL,cv::UMat &imgBB,cv::UMat &imgBR,cv::UMat &imgFR);
 
         void stich(cv::Mat& result, const std::vector<cv::Mat>& imgs, std::vector<cv::UMat>& remapImgs,
                 int blend_type=cv::detail::Blender::FEATHER);
